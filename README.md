@@ -1,24 +1,18 @@
-# Program title 
+# task-service
 
 ## Description
 
-TODO: Add program description.
-
-## Code Example
-
-```
-const todo = "Write some code here."
-```
-
-## Motivation
-
-This was written as a lab assignment for Code Fellows 401 class.
+An API for storing and retrieving task information.
 
 ## API Reference
 
-### Put in descriptions...
+```
+GET /task
+```
 
-### ...of API calls if applicable
+```
+GET /task/:id
+```
 
 ## Tests
 
