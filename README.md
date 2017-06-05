@@ -9,10 +9,11 @@ An API for storing and retrieving task information.
 ```
 GET /task
 ```
-
+Gets a list of tasks.
 ```
 GET /task/:id
 ```
+Gets the details of the specific task (:id).
 
 ## Tests
 
