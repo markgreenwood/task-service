@@ -1,8 +1,8 @@
 {
-  "name": "my-proj",
+  "name": "task-service",
   "version": "0.1.0",
-  "description": "Program description",
-  "main": "my-proj.js",
+  "description": "An API for storing and retrieving task information",
+  "main": "server.js",
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
@@ -10,22 +10,24 @@
     "build": "npm install",
     "dev": "npm install --save-dev",
     "watch": "npm run test -- -w",
-    "start": "node ./lib/my-proj.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/markgreenwood/my-proj.git"
+    "url": "git+https://github.com/markgreenwood/task-service.git"
   },
   "author": "@markgreenwood",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/markgreenwood/my-proj/issues"
+    "url": "https://github.com/markgreenwood/task-service/issues"
   },
-  "homepage": "https://github.com/markgreenwood/my-proj#readme",
+  "homepage": "https://github.com/markgreenwood/task-service#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "eslint": "^3.8.1",
     "mocha": "^3.1.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "hapi": "^16.3.0"
+  }
 }
