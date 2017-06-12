@@ -1,7 +1,6 @@
 const assert = require('assert');
 const es = require('elasticsearch'); // eslint-disable-line no-unused-vars
 const R = require('ramda');
-// const Promise = require('bluebird');
 
 describe ('task-service', () => {
 
@@ -18,7 +17,7 @@ describe ('task-service', () => {
     { id: '10', task: 'Task 10' }
   ];
 
-  const indexSettings = {
+  const indexSettings = { // eslint-disable-line no-unused-vars
     settings: {
       index: {
         number_of_shards: 1,
@@ -33,7 +32,7 @@ describe ('task-service', () => {
   console.log(bulkIndexArray);
 
   const esClient = new es.Client({
-    host: 'http://localhost:9200'
+    host: 'localhost:9200'
   });
 
   before((done) =>
@@ -43,6 +42,16 @@ describe ('task-service', () => {
       )
     )
   );
+
+  it ('queries the database', (done) => {
+    esClient.search({ index: 'testtasks', type: 'task' }, (err, resp) => {
+      if (!err) {
+        console.log(resp);
+        assert.equal(resp.hits.total, 10);
+      }
+      done(err);
+    });
+  });
 
   it ('runs tests', () => {
     // just a 'must pass' test to verify Travis is working
