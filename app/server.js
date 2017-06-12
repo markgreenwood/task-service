@@ -1,5 +1,5 @@
 const hapi = require('hapi');
-const pkg = require('./package')
+const pkg = require('./package');
 
 const server = new hapi.Server();
 
@@ -18,7 +18,7 @@ server.route({
   method: 'GET',
   path: '/healthcheck',
   handler: (request, reply) => reply({ status: 'OK', version: pkg.version })
-})
+});
 
 server.start((err) => {
   if (err) {
