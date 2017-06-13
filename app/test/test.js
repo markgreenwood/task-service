@@ -38,7 +38,9 @@ describe ('task-service', () => {
   before((done) =>
     esClient.indices.delete({ index: 'testtasks' }, () =>
       esClient.indices.create({ index: 'testtasks', body: indexSettings }, () =>
-        esClient.bulk({ body: bulkIndexArray }, done)
+        esClient.bulk({ body: bulkIndexArray }, () => {
+          setTimeout(done, 1000); // need to give ES time to settle
+        })
       )
     )
   );
