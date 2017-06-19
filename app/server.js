@@ -20,9 +20,11 @@ server.route({
   handler: (request, reply) => reply({ status: 'OK', version: pkg.version })
 });
 
-server.start((err) => {
-  if (err) {
-    throw(err);
-  }
-  console.log('Server running at: ', server.info.uri);
-});
+if (!module.parent) {
+  server.start((err) => {
+    if (err) {
+      throw(err);
+    }
+    console.log('Server running at: ', server.info.uri);
+  });
+}

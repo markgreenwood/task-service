@@ -1,6 +1,7 @@
 const assert = require('assert');
 const es = require('elasticsearch'); // eslint-disable-line no-unused-vars
 const R = require('ramda');
+const listTasks = require('../lib/listTasks');
 
 describe ('task-service', () => {
 
@@ -35,20 +36,16 @@ describe ('task-service', () => {
     host: 'localhost:9200'
   });
 
-  before((done) =>
-    esClient.indices.delete({ index: 'testtasks' }, () =>
-      esClient.indices.create({ index: 'testtasks', body: indexSettings }, () =>
-        esClient.bulk({ body: bulkIndexArray }, () => {
-          setTimeout(done, 1000); // need to give ES time to settle
-        })
-      )
-    )
+  before(() =>
+    esClient.indices.delete({ index: 'testtasks' })
+      .then(() => esClient.indices.create({ index: 'testtasks', body: indexSettings }))
+      .then(() => esClient.bulk({ body: bulkIndexArray }))
+      .then(() => esClient.indices.refresh({}))
   );
 
   it ('queries the database', (done) => {
     esClient.search({ index: 'testtasks', type: 'task' }, (err, resp) => {
       if (!err) {
-        console.log(resp);
         assert.equal(resp.hits.total, 10);
       }
       done(err);
@@ -60,10 +57,11 @@ describe ('task-service', () => {
     assert(true);
   });
 
-  // it ('GET /task returns a list of tasks', () => {
-  //   listTasks()
-  //     .then((result) => {
-  //       assert(result.length).isEqual(expected.length);
-  //     })
-  // });
+  it ('GET /task returns a list of tasks', () => {
+    return listTasks()
+      .then((result) => {
+        console.log(result);
+        assert.equal(result.length, expected.length);
+      });
+  });
 });
