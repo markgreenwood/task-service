@@ -1,7 +1,10 @@
 const hapi = require('hapi');
 const pkg = require('./package');
+const es = require('elasticsearch');
+const R = require('ramda');
 
 const server = new hapi.Server();
+const esClient = new es.Client({ host: 'http://localhost:9200' });
 
 server.connection({
   host: 'localhost',
@@ -20,6 +23,17 @@ server.route({
   handler: (request, reply) => reply({ status: 'OK', version: pkg.version })
 });
 
+server.route({
+  method: 'GET',
+  path: '/task',
+  handler: (request, reply) => { // eslint-disable-line no-unused-vars
+    esClient.search({ index: 'tasks-out', type: 'task', size: 100 })
+      .then(result => result.hits.hits)
+      .then(R.map(R.prop('_source')))
+      .then(reply);
+  }
+});
+
 if (!module.parent) {
   server.start((err) => {
     if (err) {
@@ -28,3 +42,5 @@ if (!module.parent) {
     console.log('Server running at: ', server.info.uri);
   });
 }
+
+module.exports = server;

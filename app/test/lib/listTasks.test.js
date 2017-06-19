@@ -16,7 +16,7 @@ describe('listTasks handler', () => {
     };
   });
 
-  it('calls esStorage.list', () => {
+  it.skip('calls esStorage.list', () => {
     listTasks()
       .then(() => {
         assert(esStorage.list.calledOnce);

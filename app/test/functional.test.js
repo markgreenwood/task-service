@@ -1,7 +1,9 @@
 const assert = require('assert');
 const es = require('elasticsearch'); // eslint-disable-line no-unused-vars
 const R = require('ramda');
-const listTasks = require('../lib/listTasks');
+// const listTasks = require('../lib/listTasks');
+const server = require('../server');
+const pkg = require('../package');
 
 describe ('task-service', () => {
 
@@ -24,13 +26,15 @@ describe ('task-service', () => {
         number_of_shards: 1,
         number_of_replicas: 1
       }
+    },
+    aliases: {
+      'tasks-out': {},
+      'tasks-in': {}
     }
   };
 
   const bulkRequestBuilder = R.compose(R.flatten, R.map((item) => [ { index: { _index: 'testtasks', _type: 'task', _id: item.id } }, R.omit('id', item) ]));
   const bulkIndexArray = bulkRequestBuilder(expected);
-
-  console.log(bulkIndexArray);
 
   const esClient = new es.Client({
     host: 'localhost:9200'
@@ -43,25 +47,34 @@ describe ('task-service', () => {
       .then(() => esClient.indices.refresh({}))
   );
 
-  it ('queries the database', (done) => {
-    esClient.search({ index: 'testtasks', type: 'task' }, (err, resp) => {
-      if (!err) {
-        assert.equal(resp.hits.total, 10);
-      }
-      done(err);
-    });
+  it ('queries the database', () => {
+    esClient.search({ index: 'testtasks', type: 'task' })
+      .then(resp => assert.equal(resp.hits.total, 10));
   });
 
-  it ('runs tests', () => {
-    // just a 'must pass' test to verify Travis is working
-    assert(true);
+  it ('runs healthcheck', () => {
+    const request = {
+      method: 'GET',
+      url: '/healthcheck'
+    };
+
+    return server.inject(request)
+      .then((response) => {
+        assert.equal(response.result.status, 'OK');
+        assert.equal(response.result.version, pkg.version);
+      });
   });
 
   it ('GET /task returns a list of tasks', () => {
-    return listTasks()
-      .then((result) => {
-        console.log(result);
-        assert.equal(result.length, expected.length);
+    const request = {
+      method: 'GET',
+      url: '/task'
+    };
+
+    return server.inject(request)
+      .then((response) => {
+        console.log(response.result);
+        assert.equal(response.result.length, expected.length);
       });
   });
 });
