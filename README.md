@@ -7,7 +7,7 @@ Can be used with to-do list applications.
 
 ## API Reference
 
-### Objects
+### Task
 
 ```json
 {
