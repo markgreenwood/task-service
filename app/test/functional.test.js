@@ -27,10 +27,6 @@ describe ('task-service', () => {
         number_of_replicas: 1
       }
     }
-    // aliases: {
-    //   'tasks-out': {},
-    //   'tasks-in': {}
-    // }
   };
 
   const bulkRequestBuilder = R.compose(R.flatten, R.map((item) => [ { index: { _index: 'testtasks', _type: 'task', _id: item.id } }, R.omit('id', item) ]));
@@ -53,13 +49,6 @@ describe ('task-service', () => {
       )
     )
   );
-
-  // before(() =>
-  //   esClient.indices.delete({ index: 'testtasks' })
-  //     .then(() => esClient.indices.create({ index: 'testtasks', body: indexSettings }))
-  //     .then(() => esClient.bulk({ body: bulkIndexArray }))
-  //     .then(() => esClient.indices.refresh({}))
-  // );
 
   it ('queries the database', () => {
     esClient.search({ index: 'testtasks', type: 'task' })
