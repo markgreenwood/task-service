@@ -1,3 +1,14 @@
+sudo: required
 language: node_js
 node_js:
-  - "6"
+  - 7
+services:
+  - docker
+before_install:
+  - cd ./app
+before_script:
+  - docker pull docker.elastic.co/elasticsearch/elasticsearch:5.4.1
+  - docker run -d -p 9200:9200 -e "http.host=0.0.0.0" -e "transport.host=127.0.0.1" -e "xpack.security.enabled=false" docker.elastic.co/elasticsearch/elasticsearch:5.4.1
+  - sleep 10
+script:
+  - npm test

@@ -2,22 +2,57 @@
 
 ## Description
 
-An API for storing and retrieving task information.
+An API for storing and retrieving task information. 
+Can be used with to-do list applications.
 
 ## API Reference
 
+### Task
+
+```json
+{
+    "description": "string",
+    "dueTimestamp": "datetime",
+    "startTimestamp": "datetime",
+    "completed": "boolean",
+    "priority": "number",
+    "context": "string",
+    "note": "string",
+    "completedTimestamp": "datetime",
+    "folder": "string"
+}
 ```
+
+### Endpoints
+
+```rest
 GET /task
 ```
 Gets a list of tasks.
-```
+```rest
 GET /task/:id
 ```
 Gets the details of the specific task (:id).
+```rest
+POST /task
+```
+Creates a new task and returns the `POST`ed object.
+```rest
+PUT /task/:id
+```
+Updates a task (:id) using the provided payload. Returns a copy of the updated object.
+```rest
+DELETE /task/:id
+```
+Removes a task (:id) and returns a copy of the `DELETE`d item.
 
 ## Tests
 
-The accompanying test suite can be run using the 'npm test' command.
+The accompanying test suite can be run using the `npm test` command.
+This runs all of the following three items, which can be run separately:
+- `npm run lint`: runs the linter
+- `npm run unittest`: runs unit tests
+- `npm run functest`: runs functional tests
 
 ## Contributors
 

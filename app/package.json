@@ -4,13 +4,14 @@
   "description": "An API for storing and retrieving task information",
   "main": "server.js",
   "scripts": {
-    "lint": "eslint .",
-    "pretest": "npm run lint",
-    "test": "mocha",
     "build": "npm install",
     "dev": "npm install --save-dev",
-    "watch": "npm run test -- -w",
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "npm run lint && npm run unittest && npm run functest",
+    "lint": "eslint '**/*.js'",
+    "unittest": "mocha test/lib/*",
+    "functest": "NODE_ENV=test mocha test/functional.test.js",
+    "coverage": "istanbul cover _mocha 'test/**/*.js'"
   },
   "repository": {
     "type": "git",
@@ -25,8 +26,9 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "eslint": "^3.8.1",
+    "istanbul": "^0.4.5",
     "mocha": "^3.1.2",
-    "sinon": "^2.3.4"
+    "sinon": "^2.3.5"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
