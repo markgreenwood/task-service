@@ -75,9 +75,7 @@ describe ('task-service', () => {
     };
 
     return server.inject(request)
-      .then((response) => {
-        assert.equal(response.result.length, expected.length);
-      });
+      .then(response => assert.equal(response.result.length, expected.length));
   });
 
   it ('GET /task/{id} returns task with ID {id}', () => {
@@ -87,9 +85,6 @@ describe ('task-service', () => {
     };
 
     return server.inject(request)
-      .then((response) => {
-        console.log(response);
-        assert.equal(response.task, 'Task 1');
-      });
+      .then(response => assert.equal(R.prop('task', response.result), 'Task 1'));
   });
 });
