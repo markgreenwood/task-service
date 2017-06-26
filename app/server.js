@@ -48,13 +48,9 @@ server.route({
   path: '/task',
   handler: (request, reply) => { // eslint-disable-line no-unused-vars
     return esClient.index({index: 'tasks-in', type: 'task', body: request.payload})
-      .then((response) => {
-        return esClient.get({index: 'tasks-out', type: 'task', id: response._id})
-          .then((response) => {
-            console.log(response);
-            return R.prop('_source', response);
-          });
-      });
+      .then(response => esClient.get({index: 'tasks-out', type: 'task', id: response._id}))
+      .then(R.prop('_source'))
+      .then(reply);
   }
 });
 
