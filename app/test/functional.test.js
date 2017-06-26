@@ -100,4 +100,17 @@ describe ('task-service', () => {
     return server.inject(request)
       .then(response => assert.equal(R.prop('task', response.result), 'Task 13'));
   });
+
+  it ('PUT /task/{id} modifies id and returns a copy of the full object after the PUT', () => {
+    const request = {
+      method: 'PUT',
+      url: '/task/1',
+      payload: {
+        task: 'Task 1 Modified'
+      }
+    };
+
+    return server.inject(request)
+      .then(response => assert.equal(R.prop('task', response.result), 'Task 1 Modified'));
+  });
 });
