@@ -75,9 +75,16 @@ describe ('task-service', () => {
     };
 
     return server.inject(request)
-      .then((response) => {
-        console.log(response.result);
-        assert.equal(response.result.length, expected.length);
-      });
+      .then(response => assert.equal(response.result.length, expected.length));
+  });
+
+  it ('GET /task/{id} returns task with ID {id}', () => {
+    const request = {
+      method: 'GET',
+      url: '/task/1'
+    };
+
+    return server.inject(request)
+      .then(response => assert.equal(R.prop('task', response.result), 'Task 1'));
   });
 });
