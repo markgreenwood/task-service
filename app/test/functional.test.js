@@ -87,4 +87,17 @@ describe ('task-service', () => {
     return server.inject(request)
       .then(response => assert.equal(R.prop('task', response.result), 'Task 1'));
   });
+
+  it ('POST /task creates a new task and returns a copy after POSTing', () => {
+    const request = {
+      method: 'POST',
+      url: '/task',
+      payload: {
+        task: 'Task 13'
+      }
+    };
+
+    return server.inject(request)
+      .then(response => assert.equal(R.prop('task', response.result), 'Task 13'));
+  });
 });
