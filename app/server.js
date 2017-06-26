@@ -2,6 +2,7 @@ const hapi = require('hapi');
 const pkg = require('./package');
 const es = require('elasticsearch');
 const R = require('ramda');
+const eb = require('elastic-builder');
 
 const server = new hapi.Server();
 const esClient = new es.Client({ host: 'http://localhost:9200' });
@@ -29,6 +30,16 @@ server.route({
   handler: (request, reply) => { // eslint-disable-line no-unused-vars
     esClient.search({ index: 'tasks-out', type: 'task', size: 100 })
       .then(result => result.hits.hits)
+      .then(R.map(R.prop('_source')))
+      .then(reply);
+  }
+});
+
+server.route({
+  method: 'GET',
+  path: '/task/{id}',
+  handler: (request, reply) => { // eslint-disable-line no-unused-vars
+    esClient.get({ index: 'tasks-out', type: 'task', id: request.params.id })
       .then(R.map(R.prop('_source')))
       .then(reply);
   }
