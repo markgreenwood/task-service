@@ -2,6 +2,7 @@ const hapi = require('hapi');
 const pkg = require('./package');
 const es = require('elasticsearch');
 const R = require('ramda');
+const Boom = require('boom');
 // const eb = require('elastic-builder');
 
 const server = new hapi.Server();
@@ -41,6 +42,12 @@ server.route({
     esClient.get({ index: 'tasks-out', type: 'task', id: request.params.id })
       .then(R.prop('_source'))
       .then(reply)
+      .catch(err => {
+        console.log('error', err);
+        const statusCode = R.propOr(500, 'statusCode', err);
+        request.log(['error'], err.message);
+        return reply(Boom.wrap(err, statusCode));
+      })
 });
 
 server.route({
@@ -50,7 +57,8 @@ server.route({
     return esClient.index({index: 'tasks-in', type: 'task', body: request.payload})
       .then(response => esClient.get({index: 'tasks-out', type: 'task', id: response._id}))
       .then(R.prop('_source'))
-      .then(reply);
+      .then(reply)
+      .catch(err => console.log('error ', err));
   }
 });
 
