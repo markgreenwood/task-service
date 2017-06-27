@@ -33,6 +33,11 @@ server.route({
       .then(result => result.hits.hits)
       .then(R.map(R.prop('_source')))
       .then(reply)
+      .catch(err => {
+        const statusCode = R.propOr(500, 'statusCode', err);
+        request.log(['error'], err.message);
+        return reply(Boom.wrap(err, statusCode));
+      })
 });
 
 server.route({
@@ -43,7 +48,6 @@ server.route({
       .then(R.prop('_source'))
       .then(reply)
       .catch(err => {
-        console.log('error', err);
         const statusCode = R.propOr(500, 'statusCode', err);
         request.log(['error'], err.message);
         return reply(Boom.wrap(err, statusCode));
@@ -54,11 +58,31 @@ server.route({
   method: 'POST',
   path: '/task',
   handler: (request, reply) => { // eslint-disable-line no-unused-vars
-    return esClient.index({index: 'tasks-in', type: 'task', body: request.payload})
-      .then(response => esClient.get({index: 'tasks-out', type: 'task', id: response._id}))
+    return esClient.index({ index: 'tasks-in', type: 'task', body: request.payload })
+      .then(response => esClient.get({ index: 'tasks-out', type: 'task', id: response._id }))
       .then(R.prop('_source'))
       .then(reply)
-      .catch(err => console.log('error ', err));
+      .catch(err => {
+        const statusCode = R.propOr(500, 'statusCode', err);
+        request.log(['error'], err.message);
+        return reply(Boom.wrap(err, statusCode));
+      });
+  }
+});
+
+server.route({
+  method: 'PUT',
+  path: '/task/{id}',
+  handler: (request, reply) => {
+    return esClient.update({ index: 'tasks-in', type: 'task', id: request.params.id, body: { doc: request.payload } })
+      .then(response => esClient.get({ index: 'tasks-out', type: 'task', id: response._id }))
+      .then(R.prop('_source'))
+      .then(reply)
+      .catch(err => {
+        const statusCode = R.propOr(500, 'statusCode', err);
+        request.log(['error'], err.message);
+        return reply(Boom.wrap(err, statusCode));
+      });
   }
 });
 
