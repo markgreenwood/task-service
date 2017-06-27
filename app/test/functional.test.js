@@ -88,6 +88,16 @@ describe ('task-service', () => {
       .then(response => assert.equal(R.prop('task', response.result), 'Task 1'));
   });
 
+  it ('GET /task/{id} returns 404 Not Found if id is nonexistent', () => {
+    const request = {
+      method: 'GET',
+      url: '/task/42'
+    };
+
+    return server.inject(request)
+      .then(response => assert.equal(R.prop('statusCode', response), 404));
+  });
+
   it ('POST /task creates a new task and returns a copy after POSTing', () => {
     const request = {
       method: 'POST',
