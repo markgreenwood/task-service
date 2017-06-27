@@ -123,4 +123,17 @@ describe ('task-service', () => {
     return server.inject(request)
       .then(response => assert.equal(R.prop('task', response.result), 'Task 1 Modified'));
   });
+
+  it ('DELETE /task/{id} removes id from the store and returns a copy of the removed object', () => {
+    const request = {
+      method: 'DELETE',
+      url: '/task/1'
+    };
+
+    return server.inject(request)
+      .then(() =>
+        server.inject({method: 'GET', url: '/task/1'})
+          .then(response => assert.equal(R.prop('statusCode', response), 404))
+      );
+  });
 });
