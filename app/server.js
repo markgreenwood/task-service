@@ -86,6 +86,20 @@ server.route({
   }
 });
 
+server.route({
+  method: 'DELETE',
+  path: '/task/{id}',
+  handler: (request, reply) => {
+    return esClient.delete({ index: 'tasks-in', type: 'task', id: request.params.id })
+      .then(reply)
+      .catch(err => {
+        const statusCode = R.propOr(500, 'statusCode', err);
+        request.log(['error'], err.message);
+        return reply(Boom.wrap(err, statusCode));
+      });
+  }
+});
+
 if (!module.parent) {
   server.start((err) => {
     if (err) {
