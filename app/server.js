@@ -1,5 +1,8 @@
 const hapi = require('hapi');
 const pkg = require('./package');
+const R = require('ramda');
+const handleWithCatch = require('./utils/handleWithCatch');
+const catchError = require('./utils/catchError');
 const handlers = require('./lib/handlers/handlers');
 
 const server = new hapi.Server();
@@ -21,34 +24,36 @@ server.route({
   handler: (request, reply) => reply({ status: 'OK', version: pkg.version })
 });
 
+const safeHandlers = R.map(handleWithCatch(catchError), handlers);
+
 server.route({
   method: 'GET',
   path: '/task',
-  handler: handlers.listHandler
+  handler: safeHandlers.listHandler
 });
 
 server.route({
   method: 'GET',
   path: '/task/{id}',
-  handler: handlers.getHandler
+  handler: safeHandlers.getHandler
 });
 
 server.route({
   method: 'POST',
   path: '/task',
-  handler: handlers.postHandler
+  handler: safeHandlers.postHandler
 });
 
 server.route({
   method: 'PUT',
   path: '/task/{id}',
-  handler: handlers.putHandler
+  handler: safeHandlers.putHandler
 });
 
 server.route({
   method: 'DELETE',
   path: '/task/{id}',
-  handler: handlers.deleteHandler
+  handler: safeHandlers.deleteHandler
 });
 
 if (!module.parent) {
