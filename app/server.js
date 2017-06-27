@@ -40,18 +40,20 @@ server.route({
       })
 });
 
+const getHandler = (request, reply) => // eslint-disable-line no-unused-vars
+  esClient.get({ index: 'tasks-out', type: 'task', id: request.params.id })
+    .then(R.prop('_source'))
+    .then(reply)
+    .catch(err => {
+      const statusCode = R.propOr(500, 'statusCode', err);
+      request.log(['error'], err.message);
+      return reply(Boom.wrap(err, statusCode));
+    });
+
 server.route({
   method: 'GET',
   path: '/task/{id}',
-  handler: (request, reply) => // eslint-disable-line no-unused-vars
-    esClient.get({ index: 'tasks-out', type: 'task', id: request.params.id })
-      .then(R.prop('_source'))
-      .then(reply)
-      .catch(err => {
-        const statusCode = R.propOr(500, 'statusCode', err);
-        request.log(['error'], err.message);
-        return reply(Boom.wrap(err, statusCode));
-      })
+  handler: getHandler
 });
 
 server.route({
