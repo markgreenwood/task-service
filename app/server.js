@@ -1,9 +1,14 @@
 const hapi = require('hapi');
 const pkg = require('./package');
 const R = require('ramda');
+const config = require('config');
+const es = require('elasticsearch');
+
+const esClient = new es.Client({ host: config.get('elasticsearch').host });
+
 const handleWithCatch = require('./lib/utils/handleWithCatch');
 const catchError = require('./lib/utils/catchError');
-const handlers = require('./lib/handlers');
+const handlers = require('./lib/handlers')(esClient);
 const routes = require('./lib/routes');
 
 const server = new hapi.Server();
