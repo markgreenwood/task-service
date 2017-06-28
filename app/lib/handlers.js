@@ -1,5 +1,4 @@
 const R = require('ramda');
-// const Boom = require('boom');
 const es = require('elasticsearch');
 const esClient = new es.Client({ host: 'http://localhost:9200' });
 
