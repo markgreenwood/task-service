@@ -1,4 +1,4 @@
-const hapi = require('hapi');
+const Hapi = require('hapi');
 const pkg = require('./package');
 const R = require('ramda');
 const config = require('config');
@@ -14,22 +14,25 @@ const routes = require('./lib/routes');
 const loggingPlugin = require('./lib/loggingPlugin');
 const docPlugin = require('./lib/docPlugin');
 
-const server = new hapi.Server();
-const packageJson = require('./package');
+const server = new Hapi.Server();
 
-server.connection(config.get('serverChassis'));
+const configureServer = (server) => {
+  server.connection(config.get('serverChassis'));
+  return Promise.resolve(server).return(server);
+};
 
 const registerLoggingPlugin = server => {
   return Promise.resolve(server.register(loggingPlugin())).return(server);
 };
 
 const registerDocPlugin = server => {
-  return Promise.resolve(server.register(docPlugin(packageJson))).return(server);
+  return Promise.resolve(server.register(docPlugin(pkg))).return(server);
 };
 
-registerLoggingPlugin(server)
+configureServer(server)
+  .then(registerLoggingPlugin)
   .then(registerDocPlugin)
-  .then(() => {
+  .then(server => {
     server.route({
       method: 'GET',
       path: '/healthcheck',
@@ -49,6 +52,5 @@ registerLoggingPlugin(server)
       });
     }
   });
-
 
 module.exports = server;

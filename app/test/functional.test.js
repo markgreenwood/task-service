@@ -1,7 +1,6 @@
 const assert = require('assert');
 const es = require('elasticsearch'); // eslint-disable-line no-unused-vars
 const R = require('ramda');
-// const listTasks = require('../lib/listTasks');
 const server = require('../server');
 const pkg = require('../package');
 
