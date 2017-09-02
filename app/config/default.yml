@@ -1,2 +1,6 @@
+serverChassis:
+  host: localhost
+  port: 9000
+
 elasticsearch:
   host: http://localhost:9200
