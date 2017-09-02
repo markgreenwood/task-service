@@ -2,26 +2,41 @@ module.exports = handlers => [
   {
     method: 'GET',
     path: '/task',
-    handler: handlers.listHandler
+    config: {
+      tags: ['api'],
+      handler: handlers.listHandler
+    }
   },
   {
     method: 'GET',
     path: '/task/{id}',
-    handler: handlers.getHandler
+    config: {
+      tags: ['api'],
+      handler: handlers.getHandler
+    }
   },
   {
     method: 'POST',
     path: '/task',
-    handler: handlers.postHandler
+    config: {
+      tags: ['api'],
+      handler: handlers.postHandler
+    }
   },
   {
     method: 'PUT',
     path: '/task/{id}',
-    handler: handlers.putHandler
+    config: {
+      tags: ['api'],
+      handler: handlers.putHandler
+    }
   },
   {
     method: 'DELETE',
     path: '/task/{id}',
-    handler: handlers.deleteHandler
+    config: {
+      tags: ['api'],
+      handler: handlers.deleteHandler
+    }
   }
 ];
