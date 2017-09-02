@@ -14,10 +14,11 @@ const routes = require('./lib/routes');
 const loggingPlugin = require('./lib/loggingPlugin');
 const docPlugin = require('./lib/docPlugin');
 
-const createServer = () => {
-  const server = new Hapi.Server();
+const server = new Hapi.Server();
+
+const configureServer = (server) => {
   server.connection(config.get('serverChassis'));
-  return server;
+  return Promise.resolve(server).return(server);
 };
 
 const registerLoggingPlugin = server => {
@@ -28,11 +29,10 @@ const registerDocPlugin = server => {
   return Promise.resolve(server.register(docPlugin(pkg))).return(server);
 };
 
-const server = createServer();
-
-registerLoggingPlugin(server)
+configureServer(server)
+  .then(registerLoggingPlugin)
   .then(registerDocPlugin)
-  .then(() => {
+  .then(server => {
     server.route({
       method: 'GET',
       path: '/healthcheck',
@@ -52,6 +52,5 @@ registerLoggingPlugin(server)
       });
     }
   });
-
 
 module.exports = server;

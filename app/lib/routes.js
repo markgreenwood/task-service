@@ -1,3 +1,5 @@
+const Joi = require('joi');
+
 module.exports = handlers => [
   {
     method: 'GET',
@@ -12,7 +14,12 @@ module.exports = handlers => [
     path: '/task/{id}',
     config: {
       tags: ['api'],
-      handler: handlers.getHandler
+      handler: handlers.getHandler,
+      validate: {
+        params: {
+          id: Joi.number().required()
+        }
+      }
     }
   },
   {
@@ -20,7 +27,10 @@ module.exports = handlers => [
     path: '/task',
     config: {
       tags: ['api'],
-      handler: handlers.postHandler
+      handler: handlers.postHandler,
+      validate: {
+        payload: Joi.object().required()
+      }
     }
   },
   {
@@ -28,7 +38,12 @@ module.exports = handlers => [
     path: '/task/{id}',
     config: {
       tags: ['api'],
-      handler: handlers.putHandler
+      handler: handlers.putHandler,
+      validate: {
+        params: {
+          id: Joi.number().required()
+        }
+      }
     }
   },
   {
@@ -36,7 +51,12 @@ module.exports = handlers => [
     path: '/task/{id}',
     config: {
       tags: ['api'],
-      handler: handlers.deleteHandler
+      handler: handlers.deleteHandler,
+      validate: {
+        params: {
+          id: Joi.number().required()
+        }
+      }
     }
   }
 ];
