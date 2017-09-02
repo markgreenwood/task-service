@@ -12,8 +12,10 @@ const catchError = require('./lib/utils/catchError');
 const handlers = require('./lib/handlers')(esClient);
 const routes = require('./lib/routes');
 const loggingPlugin = require('./lib/loggingPlugin');
+const docPlugin = require('./lib/docPlugin');
 
 const server = new hapi.Server();
+const packageJson = require('./package');
 
 server.connection(config.get('serverChassis'));
 
@@ -21,7 +23,12 @@ const registerLoggingPlugin = server => {
   return Promise.resolve(server.register(loggingPlugin())).return(server);
 };
 
+const registerDocPlugin = server => {
+  return Promise.resolve(server.register(docPlugin(packageJson))).return(server);
+};
+
 registerLoggingPlugin(server)
+  .then(registerDocPlugin)
   .then(() => {
     server.route({
       method: 'GET',
